@@ -1,0 +1,14 @@
+{
+  "description": "working-contract — the rules, the gauge, and a turn that ends with a card",
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/wc.mjs\"" }] }
+    ],
+    "UserPromptSubmit": [
+      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/wc.mjs\"" }] }
+    ],
+    "Stop": [
+      { "hooks": [{ "type": "command", "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/wc.mjs\"" }] }
+    ]
+  }
+}

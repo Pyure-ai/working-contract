@@ -1,0 +1,31 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "working-contract",
+  "description": "A working contract: how Claude works with the principal, in every project. One rules file, one hook file.",
+  "owner": {
+    "name": "Pyure",
+    "url": "https://github.com/Pyure-ai/working-contract"
+  },
+  "plugins": [
+    {
+      "name": "working-contract",
+      "source": "./plugins/working-contract",
+      "description": "Injects 29 working rules as SessionStart output, prints a three-row budget gauge each turn, and refuses a turn that ends without a card while a question is open. One rules file, one hook file, no dependencies and no network calls. macOS only for two of the gauge\u2019s three rows; Node.js 20.11 or newer.",
+      "author": {
+        "name": "Pyure",
+        "url": "https://github.com/Pyure-ai/working-contract"
+      },
+      "category": "productivity",
+      "license": "MIT",
+      "keywords": [
+        "workflow",
+        "process",
+        "hooks",
+        "sessionstart",
+        "decision-records",
+        "context-budget"
+      ],
+      "homepage": "https://github.com/Pyure-ai/working-contract/tree/main/plugins/working-contract"
+    }
+  ]
+}
