@@ -8,6 +8,12 @@ const BANDS = { fh: [70, 80], sd: [85, 90], ctx: [400_000, 500_000] };
 const PLUGIN = process.env.CLAUDE_PLUGIN_ROOT ?? join(import.meta.dirname, '..');
 const REPO = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
 const LIVE = { question: ['OPEN', 'DEFERRED'], work: ['UNSPECIFIED', 'BUILDABLE'] };
+// The Stop refusal is NARROWER than the state report. Imperative 4 says "whenever a question is
+// open", and imperative 19 makes DEFERRED a status beside OPEN, not a kind of it. A deferred
+// question therefore stays in the state report and leaves the gate.
+const GATED = ['OPEN'];
+// Item files that violate imperative 17 by carrying no status. Filled by items(), named at a start.
+const SKIPPED = [];
 
 let input = {};
 try {
@@ -65,9 +71,11 @@ function gauge() {
     ? 'RED — stop spawning, flush, raise the wrap-up card.'
     : dots.slice(0, 1).concat(dots[2]).includes('🟡')
       ? 'Amber on a rate row — at most two concurrent agents.'
-      : dots.includes('⚪')
-        ? 'A row is not readable — it borrows no number, and forecast by hand.'
-        : 'Green — up to six concurrent agents.';
+      : dots[1] === '🟡'
+        ? 'Amber on the context row — cut context before spawning more.'
+        : dots.includes('⚪')
+          ? 'A row is not readable — it borrows no number, and forecast by hand.'
+          : 'Green — up to six concurrent agents.';
   return [
     '---', '&nbsp;', '---', '',
     '| | Reading | Red at | Source |',
@@ -83,19 +91,21 @@ function items() {
   const d = join(REPO, 'docs', 'items');
   if (!existsSync(d)) return [];
   const out = [];
+  SKIPPED.length = 0;
   for (const f of readdirSync(d)) {
     if (!f.endsWith('.md')) continue;
     let head;
     try { head = readFileSync(join(d, f), 'utf8').slice(0, 2000); } catch { continue; }
     const g = (k) => head.match(new RegExp(`^${k}:\\s*(.+)$`, 'm'))?.[1]?.trim().replace(/^["']|["']$/g, '');
     const status = g('status');
-    if (!status) continue;
+    if (!status) { SKIPPED.push(f); continue; }
     out.push({ id: g('id') ?? f.replace(/\.md$/, ''), kind: g('kind') ?? 'work', status, title: g('title') ?? '' });
   }
   return out;
 }
 
 const live = (all) => all.filter((i) => (LIVE[i.kind] ?? LIVE.work).includes(i.status));
+const gated = (all) => all.filter((i) => i.kind === 'question' && GATED.includes(i.status));
 
 function sessionStart() {
   const rules = existsSync(join(PLUGIN, 'RULES.md')) ? readFileSync(join(PLUGIN, 'RULES.md'), 'utf8') : null;
@@ -109,9 +119,13 @@ function sessionStart() {
   const out = [];
   if (rules) out.push(rules.trimEnd());
   else out.push('RULES.md is missing from the plugin root — no rules are in force this session.');
-  out.push('', `SESSION NAME — set the title to \`${name}\`.`);
-  out.push('', `QUESTIONS ${open.length} live${open.length ? ' · ' + open.map((i) => i.id).join(' ') : ''}`);
-  out.push(`WORK ${work.length} live of ${all.length}${work.length ? ' · ' + work.slice(0, 8).map((i) => `${i.id} ${i.status}`).join(' · ') : ''}`);
+  out.push('', `SESSION NAME — set the title to \`${name}\`.`,
+    '  The title tool takes `session_id: "self"`. No lookup, no ID, nothing to read first.',
+    '  If its schema is deferred, load that before calling it — the bare name says none of this.');
+  const asked = all.filter((i) => i.kind === 'question').length;
+  out.push('', `QUESTIONS ${open.length} live of ${asked}${open.length ? ' · ' + open.map((i) => i.id).join(' ') : ''}`);
+  out.push(`WORK ${work.length} live of ${all.length - asked}${work.length ? ' · ' + work.slice(0, 8).map((i) => `${i.id} ${i.status}`).join(' · ') : ''}`);
+  if (SKIPPED.length) out.push(`NO STATUS ${SKIPPED.length} · ${SKIPPED.join(' ')} — outside both counts, against imperative 17`);
   out.push('', gauge());
   out.push('', 'START-MODE CARD — raise it now, single-select, before anything else. Options:',
     '  1. Build in lanes  2. Sweep the documents  3. Take stock in conversation  4. Something else, or later');
@@ -142,7 +156,7 @@ try {
   if (event === 'SessionStart') process.stdout.write(sessionStart() + '\n');
   else if (event === 'UserPromptSubmit') process.stdout.write(gauge() + '\n');
   else if (event === 'Stop') {
-    const open = live(items()).filter((i) => i.kind === 'question');
+    const open = gated(items());
     if (open.length && !cardThisTurn()) {
       process.stderr.write(`A turn ends with a card while a question is open: ${open.map((i) => i.id).join(' ')}.\n`);
       process.exit(2);

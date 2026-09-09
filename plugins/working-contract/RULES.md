@@ -23,11 +23,11 @@ A subagent inherits none of this; its brief carries the rules it needs.
 
 ## Width
 
-9. Green: up to six concurrent agents. Amber on a rate row: two. Red on any row: stop spawning,
-   flush, raise the wrap-up card.
+9. Green: up to six concurrent agents. Amber on a rate row: two. Amber on the context row: cut
+   before spawning. Red on any row: stop spawning, flush, raise the wrap-up card.
 10. Bands: the 5-hour window 70 % / 80 %. Weekly all models 85 % / 90 %. Context 400,000 / 500,000
     tokens.
-11. A row that cannot be read borrows no number. State its age.
+11. A row that cannot be read borrows no number.
 12. Delegate anything statable as a brief. Say what was built by hand.
 13. One agent, one objective, disjoint files, its own worktree cut from the trunk.
 14. Relay an agent's findings in substance.
