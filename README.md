@@ -7,8 +7,8 @@ observable and their cost is printed.
 
 | File | Bytes | What it is |
 |---|---|---|
-| [`plugins/working-contract/RULES.md`](plugins/working-contract/RULES.md) | 2,492 | The rules — 29 imperatives, no reasoning, no checks |
-| [`plugins/working-contract/hooks/wc.mjs`](plugins/working-contract/hooks/wc.mjs) | 7,907 | The only code. One file on three hook events |
+| [`plugins/working-contract/RULES.md`](plugins/working-contract/RULES.md) | 4,190 | The rules — no reasoning, no checks |
+| [`plugins/working-contract/hooks/wc.mjs`](plugins/working-contract/hooks/wc.mjs) | 7,929 | The only code. One file on three hook events |
 
 ## What it does to your session
 
