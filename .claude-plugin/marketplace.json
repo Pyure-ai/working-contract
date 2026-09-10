@@ -10,7 +10,7 @@
     {
       "name": "working-contract",
       "source": "./plugins/working-contract",
-      "description": "Injects 29 working rules as SessionStart output, prints a three-row budget gauge each turn, and refuses a turn that ends without a card while a question is open. One rules file, one hook file, no dependencies and no network calls. macOS only for two of the gauge’s three rows; Node.js 20.11 or newer. Cloud sessions need a setup script: see the README.",
+      "description": "Injects the working rules as SessionStart output, prints a three-row budget gauge each turn, and refuses a turn that ends without a card while a question is open. One rules file, one hook file, no dependencies and no network calls. macOS only for two of the gauge’s three rows; Node.js 20.11 or newer. Cloud sessions need a setup script: see the README.",
       "author": {
         "name": "Pyure",
         "url": "https://github.com/Pyure-ai/working-contract"

@@ -68,11 +68,11 @@ function gauge() {
   const src = u ? `desktop · ${u.ageMin} min old` : 'no source';
   const dots = [dot(fh, BANDS.fh), dot(ctx, BANDS.ctx), dot(sd, BANDS.sd)];
   const band = dots.includes('🔴')
-    ? 'RED — stop spawning, flush, raise the wrap-up card.'
+    ? 'RED — stop spawning. Imperative 36: offer wrap up.'
     : dots.slice(0, 1).concat(dots[2]).includes('🟡')
-      ? 'Amber on a rate row — at most two concurrent agents.'
+      ? 'Amber on a rate row — at most two concurrent agents. Imperative 36: offer wrap up.'
       : dots[1] === '🟡'
-        ? 'Amber on the context row — cut context before spawning more.'
+        ? 'Amber on the context row — cut context before spawning more. Imperative 36: offer wrap up.'
         : dots.includes('⚪')
           ? 'A row is not readable — it borrows no number, and forecast by hand.'
           : 'Green — up to six concurrent agents.';
@@ -127,8 +127,8 @@ function sessionStart() {
   out.push(`WORK ${work.length} live of ${all.length - asked}${work.length ? ' · ' + work.slice(0, 8).map((i) => `${i.id} ${i.status}`).join(' · ') : ''}`);
   if (SKIPPED.length) out.push(`NO STATUS ${SKIPPED.length} · ${SKIPPED.join(' ')} — outside both counts, against imperative 17`);
   out.push('', gauge());
-  out.push('', 'START-MODE CARD — raise it now, single-select, before anything else. Options:',
-    '  1. Build in lanes  2. Sweep the documents  3. Take stock in conversation  4. Something else, or later');
+  out.push('', 'START-MODE CARD — raise it now, single-select, before anything else.',
+    '  Imperative 2 names the four modes verbatim; offer those and nothing else.');
   return out.join('\n');
 }
 
