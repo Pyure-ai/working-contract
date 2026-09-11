@@ -81,3 +81,9 @@ A subagent inherits none of this; its brief carries the rules it needs.
 38. Name whatever is still only in the conversation. Then name the row and the band it entered,
     and offer exactly four answers: `write it down and stop` · `write it down and continue
     narrower` · `continue with the cap in force` · `decide later`.
+
+## Citations
+
+39. Cite a file by a quote that can be grepped, never by a line number.
+40. Never restate a count the tree can derive. Name the command that prints it.
+41. A measurement carries the date it was taken.
