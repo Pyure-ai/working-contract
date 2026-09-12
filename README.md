@@ -5,10 +5,18 @@
 Not a style guide and not a prompt. The rules arrive as `SessionStart` output, so their arrival is
 observable and their cost is printed.
 
-| File | Bytes | What it is |
-|---|---|---|
-| [`plugins/working-contract/RULES.md`](plugins/working-contract/RULES.md) | 4,406 | The rules — no reasoning, no checks |
-| [`plugins/working-contract/hooks/wc.mjs`](plugins/working-contract/hooks/wc.mjs) | 7,929 | The only code. One file on three hook events |
+| File | What it is |
+|---|---|
+| [`plugins/working-contract/RULES.md`](plugins/working-contract/RULES.md) | The rules — no reasoning, no checks |
+| [`plugins/working-contract/hooks/wc.mjs`](plugins/working-contract/hooks/wc.mjs) | The only code. One file on three hook events |
+
+Both are small enough to read end to end. **This table used to print their byte counts, and every
+release that touched the rules left them wrong.** Imperative 40 forbids restating a figure the tree
+can derive, so it names the command instead:
+
+```bash
+wc -c plugins/working-contract/RULES.md plugins/working-contract/hooks/wc.mjs
+```
 
 ## What it does to your session
 
