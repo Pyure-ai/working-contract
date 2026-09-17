@@ -26,8 +26,8 @@ wc -c plugins/working-contract/RULES.md plugins/working-contract/hooks/wc.mjs
 | `UserPromptSubmit` | prints a three-row budget gauge — 5-hour, context, weekly | no |
 | `Stop` | refuses a turn that ends without a card while a question is `OPEN` | **yes — the only one** |
 
-Everything else is stated and unenforced. The hook is wrapped in one `try`/`catch`: any failure
-exits 0 and prints what went dark, so a broken hook never blocks a session.
+Everything else is stated and unenforced. Every event the hook handles runs inside a `try`/`catch`:
+any failure exits 0 and prints what went dark, so a broken hook never blocks a session.
 
 ## Install
 
@@ -111,11 +111,21 @@ sessions.
 
 ## Updating
 
-From inside a repository that uses it:
+From inside a repository that uses it — **both commands, in this order**:
+
+```bash
+claude plugin marketplace update working-contract
+```
 
 ```bash
 claude plugin update working-contract@working-contract --scope project
 ```
+
+⚠️ **The first is not optional, and skipping it fails silently.** The registered marketplace is a
+separate cached clone of this repository under `~/.claude/plugins/marketplaces/`, and
+`plugin update` resolves against that clone, not against GitHub. Measured 2026-09-16 immediately
+after a release: the clone still held the previous version, so the second command on its own reports
+*already at the latest version* and copies nothing.
 
 `--scope` defaults to `user`. A repository carrying its own `.claude/settings.json` resolves through
 its `project` record, so only `--scope project` moves what that repository reads. A Claude Code
@@ -128,9 +138,18 @@ docs/log.md          settled decisions, one line each, append-only
 docs/items/<id>.md   one file per question and per work item
 ```
 
-Front matter: `id`, `kind` (`question` or `work`), `status`, `title`. A question is `OPEN`,
-`DEFERRED` or `ANSWERED`; work is `UNSPECIFIED`, `BUILDABLE`, `BUILT` or `DROPPED`. Nothing else
-holds state, and nothing is deleted to finish it — finishing changes `status`.
+Front matter: `id`, `kind` (`question` or `work`), `status`, `title`. A question is `OPEN` or
+`ANSWERED`; work is `UNSPECIFIED`, `BUILDABLE`, `BUILT` or `DROPPED`. Nothing else holds state, and
+nothing is deleted to finish it — finishing changes `status`.
+
+**Which of those count as live** in the `SessionStart` state report: a question while `OPEN`, work
+while `UNSPECIFIED` or `BUILDABLE`. **The `Stop` refusal reads `OPEN` alone.**
+
+⚠️ **Three things the session start names rather than swallowing.** An item with no `status` lands on
+a `NO STATUS` line. One carrying a word the rules do not define — a retired status, or one a project
+invented for itself — lands on `UNKNOWN STATUS`. And an `UNSPECIFIED` item that no open question
+cites lands on `UNSPECIFIED WITHOUT A QUESTION`, which is imperative 46 catching the omission so
+nobody has to remember it. **All three report; none of them refuses.**
 
 ## Use it without the plugin
 
