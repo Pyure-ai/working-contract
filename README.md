@@ -111,21 +111,17 @@ sessions.
 
 ## Updating
 
-From inside a repository that uses it — **both commands, in this order**:
-
-```bash
-claude plugin marketplace update working-contract
-```
+From inside a repository that uses it:
 
 ```bash
 claude plugin update working-contract@working-contract --scope project
 ```
 
-⚠️ **The first is not optional, and skipping it fails silently.** The registered marketplace is a
-separate cached clone of this repository under `~/.claude/plugins/marketplaces/`, and
-`plugin update` resolves against that clone, not against GitHub. Measured 2026-09-16 immediately
-after a release: the clone still held the previous version, so the second command on its own reports
-*already at the latest version* and copies nothing.
+`plugin update` resolves against a cached clone of this repository under
+`~/.claude/plugins/marketplaces/`, **and refreshes that clone itself.** Measured 2026-09-17 with the
+clone at 4.8.0 and the published version at 4.12.0: the one command moved both. **The refresh command
+is therefore not required** — if it ever reports *already at the latest version* when you know a newer
+one exists, `claude plugin marketplace update working-contract` forces it by hand.
 
 `--scope` defaults to `user`. A repository carrying its own `.claude/settings.json` resolves through
 its `project` record, so only `--scope project` moves what that repository reads. A Claude Code
