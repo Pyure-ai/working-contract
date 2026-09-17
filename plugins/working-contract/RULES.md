@@ -46,6 +46,7 @@ A rule's number is its address, not its position.
     decision and whose it is.
 46. An `UNSPECIFIED` item whose decision is the PRINCIPAL's carries an `OPEN` question.
     Answering it moves the item to `BUILDABLE` or `DROPPED`.
+47. A closed item is corrected by a dated addition, never by rewriting what it said.
 
 24. Run the cheap check before asserting a cause.
 25. Verify what a person can see.
@@ -60,8 +61,8 @@ A rule's number is its address, not its position.
 32. On a sweep, recompute every claim from the artefact it names, never from where its words
     appear. Recount every figure, resolve every link, and check every list that calls itself
     complete against the tracked files and against the disk.
-33. On a sweep, re-run every command the record offers as a proof, and read whether its output
-    still means what the record says.
+33. On a sweep, re-run every command the record offers as a proof that still runs, and name
+    the ones that no longer do. Read whether the output still means what the record says.
 34. On a sweep, say for each finding whether an item or a document already carries it, and propose
     an item for every finding nothing carries.
 35. On a sweep, say what was read in full, what was queried by key, and what could not be checked.
