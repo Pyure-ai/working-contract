@@ -15,7 +15,7 @@ A rule's number is its address, not its position.
 44. A choice left for the PRINCIPAL is a question, and the turn ends with a card, whether or
     not an item is open.
 
-5. A question reaches the PRINCIPAL only as a card. Every card carries a defer option.
+5. A question reaches the PRINCIPAL only as a card.
 6. The message argues every option; the card only picks.
 7. A question is at most 150 bytes. An option description is at most 50 bytes.
 8. Decide the reversible. Card the irreversible, the expensive, and anything outward-facing.
@@ -33,7 +33,7 @@ A rule's number is its address, not its position.
 
 17. One item, one file: `docs/items/<id>.md`, with `id`, `kind`, `status`, `title`.
 18. `docs/log.md` holds settled decisions, one line each, append-only.
-19. A question is `OPEN`, `DEFERRED` or `ANSWERED`. Work is `UNSPECIFIED`, `BUILDABLE`, `BUILT` or
+19. A question is `OPEN` or `ANSWERED`. Work is `UNSPECIFIED`, `BUILDABLE`, `BUILT` or
     `DROPPED`.
 20. Write an answer down in the turn it arrives.
 21. Never delete an item to finish it. Change its status.
@@ -42,13 +42,17 @@ A rule's number is its address, not its position.
 43. Before raising an item, say whether the record or the product already carries it. Amend a
     live item rather than raise a second; cite a closed one. If the product already does it,
     raise nothing and correct whatever said it did not.
+45. An item is `UNSPECIFIED` when a decision must be made before it can be built. It names that
+    decision and whose it is.
+46. An `UNSPECIFIED` item whose decision is the PRINCIPAL's carries an `OPEN` question.
+    Answering it moves the item to `BUILDABLE` or `DROPPED`.
 
 24. Run the cheap check before asserting a cause.
 25. Verify what a person can see.
 26. Write commands out in full. Run everything you can yourself.
 27. Run the full suite once per branch, before hand-back or merge.
-28. Leave nothing stranded: no dirty tree, no branch ahead of the trunk.
-29. Never report spend or credit. Only the PRINCIPAL ends a session.
+28. Leave nothing stranded: no dirty tree, no branch ahead of the trunk that no tag holds.
+29. Never report spend or credit as an absolute figure. Only the PRINCIPAL ends a session.
 
 30. On `Sweep the project`, cover every file in the project, exhaustively.
 31. On a sweep, compare what the project contains against what its own record says it contains,

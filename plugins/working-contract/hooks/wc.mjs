@@ -7,13 +7,15 @@ import { join, basename } from 'node:path';
 const BANDS = { fh: [70, 80], sd: [85, 90], ctx: [400_000, 500_000] };
 const PLUGIN = process.env.CLAUDE_PLUGIN_ROOT ?? join(import.meta.dirname, '..');
 const REPO = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
-const LIVE = { question: ['OPEN', 'DEFERRED'], work: ['UNSPECIFIED', 'BUILDABLE'] };
-// The Stop refusal is NARROWER than the state report. Imperative 4 says "whenever a question is
-// open", and imperative 19 makes DEFERRED a status beside OPEN, not a kind of it. A deferred
-// question therefore stays in the state report and leaves the gate.
+const LIVE = { question: ['OPEN'], work: ['UNSPECIFIED', 'BUILDABLE'] };
 const GATED = ['OPEN'];
+// Every status imperative 19 defines. A file carrying anything else — a retired word, or one a
+// project invented for itself — passes the SKIPPED check, then fails the LIVE filter, and would
+// sit in the denominator unnamed for good. UNKNOWN names it instead. It reports; it never refuses.
+const KNOWN = { question: ['OPEN', 'ANSWERED'], work: ['UNSPECIFIED', 'BUILDABLE', 'BUILT', 'DROPPED'] };
 // Item files that violate imperative 17 by carrying no status. Filled by items(), named at a start.
 const SKIPPED = [];
+const UNKNOWN = [];
 
 let input = {};
 try {
@@ -92,6 +94,7 @@ function items() {
   if (!existsSync(d)) return [];
   const out = [];
   SKIPPED.length = 0;
+  UNKNOWN.length = 0;
   for (const f of readdirSync(d)) {
     if (!f.endsWith('.md')) continue;
     let head;
@@ -99,9 +102,26 @@ function items() {
     const g = (k) => head.match(new RegExp(`^${k}:\\s*(.+)$`, 'm'))?.[1]?.trim().replace(/^["']|["']$/g, '');
     const status = g('status');
     if (!status) { SKIPPED.push(f); continue; }
-    out.push({ id: g('id') ?? f.replace(/\.md$/, ''), kind: g('kind') ?? 'work', status, title: g('title') ?? '' });
+    const kind = g('kind') ?? 'work';
+    if (!(KNOWN[kind] ?? KNOWN.work).includes(status)) UNKNOWN.push(`${f.replace(/\.md$/, '')}=${status}`);
+    out.push({ id: g('id') ?? f.replace(/\.md$/, ''), kind, status, title: g('title') ?? '', file: f });
   }
   return out;
+}
+
+// Imperative 46. Nothing can read WHOSE a decision is, so this names an UNSPECIFIED item that no
+// open question cites at all — the omission, not the misattribution. It reports; it never refuses.
+function unasked(all) {
+  const d = join(REPO, 'docs', 'items');
+  let text = '';
+  for (const q of all.filter((i) => i.kind === 'question' && i.status === 'OPEN')) {
+    try { text += readFileSync(join(d, q.file), 'utf8'); } catch { /* an unreadable question cites nothing */ }
+  }
+  const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, (c) => '\\' + c);
+  return all
+    .filter((i) => i.kind !== 'question' && i.status === 'UNSPECIFIED')
+    .filter((i) => !new RegExp(`(^|[^A-Za-z0-9.])${esc(i.id)}([^A-Za-z0-9.]|$)`).test(text))
+    .map((i) => i.id);
 }
 
 const live = (all) => all.filter((i) => (LIVE[i.kind] ?? LIVE.work).includes(i.status));
@@ -126,6 +146,9 @@ function sessionStart() {
   out.push('', `QUESTIONS ${open.length} live of ${asked}${open.length ? ' · ' + open.map((i) => i.id).join(' ') : ''}`);
   out.push(`WORK ${work.length} live of ${all.length - asked}${work.length ? ' · ' + work.slice(0, 8).map((i) => `${i.id} ${i.status}`).join(' · ') : ''}`);
   if (SKIPPED.length) out.push(`NO STATUS ${SKIPPED.length} · ${SKIPPED.join(' ')} — outside both counts, against imperative 17`);
+  if (UNKNOWN.length) out.push(`UNKNOWN STATUS ${UNKNOWN.length} · ${UNKNOWN.join(' ')} — not a status imperative 19 defines, so in no count. Migrate or answer.`);
+  const noask = unasked(all);
+  if (noask.length) out.push(`UNSPECIFIED WITHOUT A QUESTION ${noask.length} · ${noask.join(' ')} — no open question cites these, against imperative 46`);
   out.push('', gauge());
   out.push('', 'START-MODE CARD — raise it now, single-select, before anything else.',
     '  Imperative 2 names the four modes verbatim; offer those and nothing else.');
