@@ -124,6 +124,27 @@ function unasked(all) {
     .map((i) => i.id);
 }
 
+// Imperative 49. Only a sweep writes the marker, so this line cannot clear itself. It compares the
+// installed contract version against the one the record was last swept at, and RECOMMENDS; nothing
+// here refuses, and a repository with no log is left alone rather than nagged.
+function sweepDue() {
+  let now;
+  try { now = JSON.parse(readFileSync(join(PLUGIN, ".claude-plugin", "plugin.json"), "utf8")).version; }
+  catch { return null; }
+  if (typeof now !== "string") return null;
+  let log;
+  try { log = readFileSync(join(REPO, "docs", "log.md"), "utf8"); } catch { return null; }
+  // Case-sensitive on purpose: prose writes `last swept at 4.12.0` all the time, and a lowercase
+  // match would let an ordinary sentence silence this line. The marker is a token, not a phrase.
+  const hits = [...log.matchAll(/SWEPT AT (\d+\.\d+\.\d+)/g)].map((m) => m[1]);
+  if (!hits.length) return `SWEEP RECOMMENDED — \`docs/log.md\` records no sweep; this is ${now}. Imperative 49.`;
+  const last = hits[hits.length - 1];
+  const n = (v) => v.split(".").map(Number);
+  const [x, y] = [n(now), n(last)];
+  const later = x[0] !== y[0] ? x[0] > y[0] : x[1] !== y[1] ? x[1] > y[1] : x[2] > y[2];
+  return later ? `SWEEP RECOMMENDED — last swept at ${last}; this is ${now}. The rules changed since: imperative 48.` : null;
+}
+
 const live = (all) => all.filter((i) => (LIVE[i.kind] ?? LIVE.work).includes(i.status));
 const gated = (all) => all.filter((i) => i.kind === 'question' && GATED.includes(i.status));
 
@@ -149,6 +170,8 @@ function sessionStart() {
   if (UNKNOWN.length) out.push(`UNKNOWN STATUS ${UNKNOWN.length} · ${UNKNOWN.join(' ')} — not a status imperative 19 defines, so in no count. Migrate or answer.`);
   const noask = unasked(all);
   if (noask.length) out.push(`UNSPECIFIED WITHOUT A QUESTION ${noask.length} · ${noask.join(' ')} — no open question cites these, against imperative 46`);
+  const due = sweepDue();
+  if (due) out.push(due);
   out.push('', gauge());
   out.push('', 'START-MODE CARD — raise it now, single-select, before anything else.',
     '  Imperative 2 names the four modes verbatim; offer those and nothing else.');

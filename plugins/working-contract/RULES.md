@@ -67,6 +67,11 @@ A rule's number is its address, not its position.
     an item for every finding nothing carries.
 35. On a sweep, say what was read in full, what was queried by key, and what could not be checked.
     A step that found nothing and could not have failed is a finding.
+48. On a sweep, check against the imperatives in force now: every document the project carries, and
+    every item that is `OPEN`, `UNSPECIFIED` or `BUILDABLE`. A closed item is exempt. What does not
+    comply is a finding; the findings of one imperative become one item naming everything it covers.
+49. A sweep records in `docs/log.md` the contract version it ran against, as `SWEPT AT <version>`.
+    A later version recommends a sweep; it never compels one.
 
 36. While any row is amber or red, offer `wrap up` on every card that ends a turn.
 37. On `wrap up`, check this session only: every decision taken, every finding surfaced, and
