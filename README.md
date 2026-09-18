@@ -147,9 +147,11 @@ invented for itself — lands on `UNKNOWN STATUS`. An `UNSPECIFIED` item that no
 lands on `UNSPECIFIED WITHOUT A QUESTION`, which is imperative 46 catching the omission so nobody
 has to remember it. And a record last swept against an older contract version lands on `SWEEP
 RECOMMENDED`: the rules have changed since, and imperative 48 has a sweep check every document and
-every live item against the imperatives in force now. Imperative 49 has that sweep record the version
-it ran against in `docs/log.md`, as `SWEPT AT <version>` — **only a sweep writes it**, so the line
-cannot clear itself. **Every one of them reports; none of them refuses.**
+every live item against the imperatives in force now — every document but `docs/log.md`, which 18
+makes append-only, so 48 exempts it from its own check and 30 to 33 reach it like anything else.
+Imperative 49 has that sweep record the version it ran against in `docs/log.md`, as
+`SWEPT AT <version>` — **only a sweep writes it**, so the line cannot clear itself. **Every one of
+them reports; none of them refuses.**
 
 ## Use it without the plugin
 
