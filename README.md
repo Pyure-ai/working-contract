@@ -141,11 +141,15 @@ nothing is deleted to finish it — finishing changes `status`.
 **Which of those count as live** in the `SessionStart` state report: a question while `OPEN`, work
 while `UNSPECIFIED` or `BUILDABLE`. **The `Stop` refusal reads `OPEN` alone.**
 
-⚠️ **Three things the session start names rather than swallowing.** An item with no `status` lands on
+⚠️ **What the session start names rather than swallowing.** An item with no `status` lands on
 a `NO STATUS` line. One carrying a word the rules do not define — a retired status, or one a project
-invented for itself — lands on `UNKNOWN STATUS`. And an `UNSPECIFIED` item that no open question
-cites lands on `UNSPECIFIED WITHOUT A QUESTION`, which is imperative 46 catching the omission so
-nobody has to remember it. **All three report; none of them refuses.**
+invented for itself — lands on `UNKNOWN STATUS`. An `UNSPECIFIED` item that no open question cites
+lands on `UNSPECIFIED WITHOUT A QUESTION`, which is imperative 46 catching the omission so nobody
+has to remember it. And a record last swept against an older contract version lands on `SWEEP
+RECOMMENDED`: the rules have changed since, and imperative 48 has a sweep check every document and
+every live item against the imperatives in force now. Imperative 49 has that sweep record the version
+it ran against in `docs/log.md`, as `SWEPT AT <version>` — **only a sweep writes it**, so the line
+cannot clear itself. **Every one of them reports; none of them refuses.**
 
 ## Use it without the plugin
 
