@@ -25,7 +25,7 @@ A rule's number is its address, not its position.
 10. Bands: the 5-hour window 70 % / 80 %. Weekly all models 85 % / 90 %. Context 400,000 / 500,000
     tokens.
 11. A row that cannot be read borrows no number.
-12. Delegate anything statable as a brief. Say what was built by hand.
+12. Delegate anything statable as a brief, within 9's cap. Say what was built by hand.
 13. One agent, one objective, disjoint files, its own worktree cut from the trunk.
 14. Relay an agent's findings in substance.
 15. An agent runs no write command against a cloud account or a shared database.
@@ -55,7 +55,8 @@ A rule's number is its address, not its position.
 28. Leave nothing stranded: no dirty tree, no branch ahead of the trunk that no tag holds.
 29. Never report spend or credit as an absolute figure. Only the PRINCIPAL ends a session.
 
-30. On `Sweep the project`, cover every file in the project, exhaustively.
+30. On `Sweep the project`, cover every file in the project, exhaustively. Nothing is exempt from
+    being read.
 31. On a sweep, compare what the project contains against what its own record says it contains,
     says was built, and says was decided. Every disagreement is a finding.
 32. On a sweep, recompute every claim from the artefact it names, never from where its words
@@ -64,12 +65,14 @@ A rule's number is its address, not its position.
 33. On a sweep, re-run every command the record offers as a proof that still runs, and name
     the ones that no longer do. Read whether the output still means what the record says.
 34. On a sweep, say for each finding whether an item or a document already carries it, and propose
-    an item for every finding nothing carries.
+    an item for every finding nothing carries. 48 aggregates its own findings; these are not.
 35. On a sweep, say what was read in full, what was queried by key, and what could not be checked.
     A step that found nothing and could not have failed is a finding.
 48. On a sweep, check against the imperatives in force now: every document the project carries, and
-    every item that is `OPEN`, `UNSPECIFIED` or `BUILDABLE`. A closed item is exempt. What does not
-    comply is a finding; the findings of one imperative become one item naming everything it covers.
+    every item that is `OPEN`, `UNSPECIFIED` or `BUILDABLE`. What does not comply is a finding, and
+    the findings of one imperative become one item naming everything it covers. A closed item and
+    `docs/log.md` are exempt from THIS rule only, 47 and 18 forbidding the repair; 30 to 33 reach
+    them like anything else.
 49. A sweep records in `docs/log.md` the contract version it ran against, as `SWEPT AT <version>`.
     A later version recommends a sweep; it never compels one.
 
