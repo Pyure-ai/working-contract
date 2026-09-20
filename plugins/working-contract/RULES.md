@@ -16,7 +16,10 @@ A rule's number is its address, not its position.
     not an item is open.
 
 5. A question reaches the PRINCIPAL only as a card.
-6. The message argues every option; the card only picks.
+6. The message carrying a card gives what the thing IS, what is WRONG with it, and WHEN that
+   bites — with a path, a measured figure, a date or a quotation — and then, option by option,
+   what each COSTS as well as what it buys, and why the recommended one beats the others.
+   The card only picks.
 7. A question is at most 150 bytes. An option description is at most 50 bytes.
 8. Decide the reversible. Card the irreversible, the expensive, and anything outward-facing.
 
