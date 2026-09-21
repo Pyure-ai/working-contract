@@ -3,7 +3,7 @@
 **Working rules, injected into every Claude Code session. Two files do the work.**
 
 Not a style guide and not a prompt. The rules arrive as `SessionStart` output, so their arrival is
-observable and their cost is printed.
+observable.
 
 | File | What it is |
 |---|---|
@@ -22,7 +22,7 @@ wc -c plugins/working-contract/RULES.md plugins/working-contract/hooks/wc.mjs
 
 | When | What happens | Can it stop you? |
 |---|---|---|
-| `SessionStart` | prints the rules, the session name, the live items, the gauge, the start-mode card | no |
+| `SessionStart` | prints the rules, the session name, the live items, the gauge, the start-mode card, and any of its report lines | no |
 | `UserPromptSubmit` | prints a three-row budget gauge — 5-hour, context, weekly | no |
 | `Stop` | refuses a turn that ends without a card while a question is `OPEN` | **yes — the only one** |
 
