@@ -9,11 +9,11 @@ const PLUGIN = process.env.CLAUDE_PLUGIN_ROOT ?? join(import.meta.dirname, '..')
 const REPO = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
 const LIVE = { question: ['OPEN'], work: ['UNSPECIFIED', 'BUILDABLE'] };
 const GATED = ['OPEN'];
-// Every status imperative 19 defines. A file carrying anything else — a retired word, or one a
+// Every status rule 18 defines. A file carrying anything else — a retired word, or one a
 // project invented for itself — passes the SKIPPED check, then fails the LIVE filter, and would
 // sit in the denominator unnamed for good. UNKNOWN names it instead. It reports; it never refuses.
 const KNOWN = { question: ['OPEN', 'ANSWERED'], work: ['UNSPECIFIED', 'BUILDABLE', 'BUILT', 'DROPPED'] };
-// Item files that violate imperative 17 by carrying no status. Filled by items(), named at a start.
+// Item files that violate rule 18 by carrying no status. Filled by items(), named at a start.
 const SKIPPED = [];
 const UNKNOWN = [];
 
@@ -70,11 +70,11 @@ function gauge() {
   const src = u ? `desktop · ${u.ageMin} min old` : 'no source';
   const dots = [dot(fh, BANDS.fh), dot(ctx, BANDS.ctx), dot(sd, BANDS.sd)];
   const band = dots.includes('🔴')
-    ? 'RED — stop spawning. Imperative 36: offer wrap up.'
+    ? 'RED — stop spawning. Rule 21: offer the wrap-up.'
     : dots.slice(0, 1).concat(dots[2]).includes('🟡')
-      ? 'Amber on a rate row — at most two concurrent agents. Imperative 36: offer wrap up.'
+      ? 'Amber on a rate row — at most two concurrent agents. Rule 21: offer the wrap-up.'
       : dots[1] === '🟡'
-        ? 'Amber on the context row — cut context before spawning more. Imperative 36: offer wrap up.'
+        ? 'Amber on the context row — cut context before spawning more. Rule 21: offer the wrap-up.'
         : dots.includes('⚪')
           ? 'A row is not readable — it borrows no number, and forecast by hand.'
           : 'Green — up to six concurrent agents.';
@@ -109,8 +109,8 @@ function items() {
   return out;
 }
 
-// Imperative 46. Nothing can read WHOSE a decision is, so this names an UNSPECIFIED item that no
-// open question cites at all — the omission, not the misattribution. It reports; it never refuses.
+// Rule 18 has UNSPECIFIED name the decision it waits on, and rule 2 makes the PRINCIPAL's a card.
+// Nothing can read WHOSE a decision is, so this names the omission. It reports; it never refuses.
 function unasked(all) {
   const d = join(REPO, 'docs', 'items');
   let text = '';
@@ -122,27 +122,6 @@ function unasked(all) {
     .filter((i) => i.kind !== 'question' && i.status === 'UNSPECIFIED')
     .filter((i) => !new RegExp(`(^|[^A-Za-z0-9.])${esc(i.id)}([^A-Za-z0-9.]|$)`).test(text))
     .map((i) => i.id);
-}
-
-// Imperative 49. Only a sweep writes the marker, so this line cannot clear itself. It compares the
-// installed contract version against the one the record was last swept at, and RECOMMENDS; nothing
-// here refuses, and a repository with no log is left alone rather than nagged.
-function sweepDue() {
-  let now;
-  try { now = JSON.parse(readFileSync(join(PLUGIN, ".claude-plugin", "plugin.json"), "utf8")).version; }
-  catch { return null; }
-  if (typeof now !== "string") return null;
-  let log;
-  try { log = readFileSync(join(REPO, "docs", "log.md"), "utf8"); } catch { return null; }
-  // Case-sensitive on purpose: prose writes `last swept at 4.12.0` all the time, and a lowercase
-  // match would let an ordinary sentence silence this line. The marker is a token, not a phrase.
-  const hits = [...log.matchAll(/SWEPT AT (\d+\.\d+\.\d+)/g)].map((m) => m[1]);
-  if (!hits.length) return `SWEEP RECOMMENDED — \`docs/log.md\` records no sweep; this is ${now}. Imperative 49.`;
-  const last = hits[hits.length - 1];
-  const n = (v) => v.split(".").map(Number);
-  const [x, y] = [n(now), n(last)];
-  const later = x[0] !== y[0] ? x[0] > y[0] : x[1] !== y[1] ? x[1] > y[1] : x[2] > y[2];
-  return later ? `SWEEP RECOMMENDED — last swept at ${last}; this is ${now}. The rules changed since: imperative 48.` : null;
 }
 
 const live = (all) => all.filter((i) => (LIVE[i.kind] ?? LIVE.work).includes(i.status));
@@ -166,15 +145,14 @@ function sessionStart() {
   const asked = all.filter((i) => i.kind === 'question').length;
   out.push('', `QUESTIONS ${open.length} live of ${asked}${open.length ? ' · ' + open.map((i) => i.id).join(' ') : ''}`);
   out.push(`WORK ${work.length} live of ${all.length - asked}${work.length ? ' · ' + work.slice(0, 8).map((i) => `${i.id} ${i.status}`).join(' · ') : ''}`);
-  if (SKIPPED.length) out.push(`NO STATUS ${SKIPPED.length} · ${SKIPPED.join(' ')} — outside both counts, against imperative 17`);
-  if (UNKNOWN.length) out.push(`UNKNOWN STATUS ${UNKNOWN.length} · ${UNKNOWN.join(' ')} — not a status imperative 19 defines, so in no count. Migrate or answer.`);
+  if (SKIPPED.length) out.push(`NO STATUS ${SKIPPED.length} · ${SKIPPED.join(' ')} — outside both counts, against rule 18`);
+  if (UNKNOWN.length) out.push(`UNKNOWN STATUS ${UNKNOWN.length} · ${UNKNOWN.join(' ')} — not a status rule 18 defines, so in no count. Migrate or answer.`);
   const noask = unasked(all);
-  if (noask.length) out.push(`UNSPECIFIED WITHOUT A QUESTION ${noask.length} · ${noask.join(' ')} — no open question cites these, against imperative 46`);
-  const due = sweepDue();
-  if (due) out.push(due);
+  if (noask.length) out.push(`UNSPECIFIED WITHOUT A QUESTION ${noask.length} · ${noask.join(' ')} — no open question cites these, against rules 18 and 2`);
   out.push('', gauge());
-  out.push('', 'START-MODE CARD — raise it now, single-select, before anything else.',
-    '  Imperative 2 names the four modes verbatim; offer those and nothing else.');
+  out.push('', 'OPEN WITH THE STATE, THEN ASK WHAT TO WORK ON — rule 31.',
+    '  Rule 21: every session ends with a wrap-up, offered on the card that ends a turn',
+    '  in which something was decided or changed.');
   return out.join('\n');
 }
 
