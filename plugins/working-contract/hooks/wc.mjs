@@ -150,7 +150,7 @@ function sessionStart() {
   const noask = unasked(all);
   if (noask.length) out.push(`UNSPECIFIED WITHOUT A QUESTION ${noask.length} · ${noask.join(' ')} — no open question cites these, against rules 18 and 2`);
   out.push('', gauge());
-  out.push('', 'OPEN WITH THE STATE, THEN ASK WHAT TO WORK ON — rule 31.',
+  out.push('', 'OPEN WITH THE STATE, THEN ASK WHAT TO WORK ON, AND WHETHER TO RUN IT IN AGENT LANES — rule 31.',
     '  Rule 21: every session ends with a wrap-up, offered on the card that ends a turn',
     '  in which something was decided or changed.');
   return out.join('\n');

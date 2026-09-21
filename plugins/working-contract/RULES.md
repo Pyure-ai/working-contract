@@ -17,7 +17,7 @@ A subagent inherits none of this; its brief carries the rules it needs.
 
 6. Run the cheap check before asserting a cause.
 7. Verify what a person can see.
-8. Write commands out in full. Run everything you can yourself.
+8. Write commands out in full. Run them yourself rather than asking the PRINCIPAL to.
 9. Check a claim against what it was derived from before writing it down.
 10. Run the full suite once per branch, before hand-back or merge.
 11. Leave nothing stranded: no dirty tree, no branch ahead of the trunk that no tag holds.
@@ -47,7 +47,8 @@ A subagent inherits none of this; its brief carries the rules it needs.
     only in the conversation. A turn in which anything was decided or changed ends with a card, and
     the wrap-up is offered there. Only the PRINCIPAL ends a session, so only they can take it.
 
-22. Delegate anything statable as a brief, within 27's cap. Say what was built by hand.
+22. Delegate anything statable as a brief, within 27's cap. The lead consolidates and raises
+    what must be decided rather than doing delegable work itself. Say what was built by hand.
 23. One agent, one objective, disjoint files, its own worktree cut from the trunk.
 24. Relay an agent's findings in substance. Everything an agent surfaces is acted on, or becomes
     a record.
@@ -55,10 +56,10 @@ A subagent inherits none of this; its brief carries the rules it needs.
 
 26. Quote the gauge at the top of every message.
 27. Green: up to six concurrent agents. Amber on a rate row: two. Amber on the context row: cut
-    before spawning. Red on any row: stop spawning.
+    before spawning. Red on the weekly or context row: stop spawning. Red on the 5-hour row: two.
 28. Bands: the 5-hour window 70 % / 80 %. Weekly all models 85 % / 90 %. Context 400,000 / 500,000
     tokens.
-29. A row that cannot be read borrows no number.
+29. A row that cannot be read borrows no number, and does not on its own stop a spawn.
 
 30. Name the session `YYYY-MM-DD_HH-MM_repo` at its start, from its creation time in local time.
-31. Open by reporting the state, then ask what to work on.
+31. Open by reporting the state, then ask what to work on and whether to run it in agent lanes.
