@@ -7,7 +7,7 @@ A subagent inherits none of this; its brief carries the rules it needs.
 1. Decide the reversible yourself. Bring the PRINCIPAL the irreversible, the expensive, and
    anything outward-facing.
 2. A choice left to the PRINCIPAL is a question. A question reaches them only as a card, and the
-   turn that raises one ends there.
+   turn that raises one ends there. While it is open, every turn ends with a card.
 3. The message carrying a card gives what the thing IS, what is WRONG with it, and WHEN that
    bites — with a path, a measured figure, a date or a quotation — and then, option by option,
    what each COSTS as well as what it buys, and why the recommended one beats the others.
@@ -44,8 +44,8 @@ A subagent inherits none of this; its brief carries the rules it needs.
     conversation and be followable by someone who was not here. It fails on a dirty tree, a
     decision missing from the log, a changed state its record does not carry, a record this
     session wrote that this session's own changes made false, or anything that matters living
-    only in the conversation. Offer it on the card that ends any turn in which
-    something was decided or changed. Only the PRINCIPAL ends a session, so only they can take it.
+    only in the conversation. A turn in which anything was decided or changed ends with a card, and
+    the wrap-up is offered there. Only the PRINCIPAL ends a session, so only they can take it.
 
 22. Delegate anything statable as a brief, within 27's cap. Say what was built by hand.
 23. One agent, one objective, disjoint files, its own worktree cut from the trunk.
