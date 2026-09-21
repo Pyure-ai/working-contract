@@ -42,8 +42,9 @@ A subagent inherits none of this; its brief carries the rules it needs.
 21. Every session ends with a wrap-up, whatever the budget says, covering this session only:
     every decision taken, every state that changed, everything built. Each must stand outside the
     conversation and be followable by someone who was not here. It fails on a dirty tree, a
-    decision missing from the log, a changed state its record does not carry, or anything that
-    matters living only in the conversation. Offer it on the card that ends any turn in which
+    decision missing from the log, a changed state its record does not carry, a record this
+    session wrote that this session's own changes made false, or anything that matters living
+    only in the conversation. Offer it on the card that ends any turn in which
     something was decided or changed. Only the PRINCIPAL ends a session, so only they can take it.
 
 22. Delegate anything statable as a brief, within 27's cap. Say what was built by hand.
