@@ -144,7 +144,7 @@ function sessionStart() {
     '  If its schema is deferred, load that before calling it — the bare name says none of this.');
   const asked = all.filter((i) => i.kind === 'question').length;
   out.push('', `QUESTIONS ${open.length} live of ${asked}${open.length ? ' · ' + open.map((i) => i.id).join(' ') : ''}`);
-  out.push(`WORK ${work.length} live of ${all.length - asked}${work.length ? ' · ' + work.slice(0, 8).map((i) => `${i.id} ${i.status}`).join(' · ') : ''}`);
+  out.push(`WORK ${work.length} live of ${all.length - asked}${work.length ? ' · ' + work.map((i) => `${i.id} ${i.status}`).join(' · ') : ''}`);
   if (SKIPPED.length) out.push(`NO STATUS ${SKIPPED.length} · ${SKIPPED.join(' ')} — outside both counts, against rule 18`);
   if (UNKNOWN.length) out.push(`UNKNOWN STATUS ${UNKNOWN.length} · ${UNKNOWN.join(' ')} — not a status rule 18 defines, so in no count. Migrate or answer.`);
   const noask = unasked(all);
