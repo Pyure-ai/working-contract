@@ -11,7 +11,7 @@ observable and their cost is printed.
 | [`plugins/working-contract/hooks/wc.mjs`](plugins/working-contract/hooks/wc.mjs) | The only code. One file on three hook events |
 
 Both are small enough to read end to end. **This table used to print their byte counts, and every
-release that touched the rules left them wrong.** Imperative 40 forbids restating a figure the tree
+release that touched the rules left them wrong.** Rule 12 forbids writing down a figure the tree
 can derive, so it names the command instead:
 
 ```bash
@@ -144,14 +144,14 @@ while `UNSPECIFIED` or `BUILDABLE`. **The `Stop` refusal reads `OPEN` alone.**
 ⚠️ **What the session start names rather than swallowing.** An item with no `status` lands on
 a `NO STATUS` line. One carrying a word the rules do not define — a retired status, or one a project
 invented for itself — lands on `UNKNOWN STATUS`. An `UNSPECIFIED` item that no open question cites
-lands on `UNSPECIFIED WITHOUT A QUESTION`, which is imperative 46 catching the omission so nobody
-has to remember it. And a record last swept against an older contract version lands on `SWEEP
-RECOMMENDED`: the rules have changed since, and imperative 48 has a sweep check every document and
-every live item against the imperatives in force now — every document but `docs/log.md`, which 18
-makes append-only, so 48 exempts it from its own check and 30 to 33 reach it like anything else.
-Imperative 49 has that sweep record the version it ran against in `docs/log.md`, as
-`SWEPT AT <version>` — **only a sweep writes it**, so the line cannot clear itself. **Every one of
-them reports; none of them refuses.**
+lands on `UNSPECIFIED WITHOUT A QUESTION`, which is rules 18 and 2 catching the omission so nobody
+has to remember it. **Every one of them reports; none of them refuses.**
+
+⚠️ **5.0.0 removed a fourth line.** `SWEEP RECOMMENDED` named a record last swept against an older
+contract version. 5.0.0 has no sweep: the eight rules that audited the record were cut along with
+the record-maintenance rules they audited, so the line had no subject and went with them. What
+replaces it is rule 21 — every session ends with a wrap-up covering that session only, offered on
+the card that ends any turn in which something was decided or changed.
 
 ## Use it without the plugin
 
