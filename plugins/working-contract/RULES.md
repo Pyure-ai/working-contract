@@ -41,10 +41,11 @@ A rule's number is its address, not its position.
 20. Write an answer down in the turn it arrives.
 21. Never delete an item to finish it. Change its status.
 22. A `BUILT` item names a dated command that proves it.
-23. Everything an agent surfaces becomes an item.
+23. Everything an agent surfaces lands in an item.
 43. Before raising an item, say whether the record or the product already carries it. Amend a
-    live item rather than raise a second; cite a closed one. If the product already does it,
-    raise nothing and correct whatever said it did not.
+    live item rather than raise a second; cite a closed one, or correct it under 47 where the
+    finding falsifies it. If the product already does it, raise nothing and correct whatever
+    said it did not.
 45. An item is `UNSPECIFIED` when a decision must be made before it can be built. It names that
     decision and whose it is.
 46. An `UNSPECIFIED` item whose decision is the PRINCIPAL's carries an `OPEN` question.
@@ -59,7 +60,8 @@ A rule's number is its address, not its position.
 29. Never report spend or credit as an absolute figure. Only the PRINCIPAL ends a session.
 
 30. On `Sweep the project`, cover every file in the project, exhaustively. Nothing is exempt from
-    being read.
+    being read. A dated record of what was true then is a finding only where believing it today
+    would mislead — it describes the tree as it is now, or something in force rests on it.
 31. On a sweep, compare what the project contains against what its own record says it contains,
     says was built, and says was decided. Every disagreement is a finding.
 32. On a sweep, recompute every claim from the artefact it names, never from where its words
@@ -67,8 +69,10 @@ A rule's number is its address, not its position.
     complete against the tracked files and against the disk.
 33. On a sweep, re-run every command the record offers as a proof that still runs, and name
     the ones that no longer do. Read whether the output still means what the record says.
-34. On a sweep, say for each finding whether an item or a document already carries it, and propose
-    an item for every finding nothing carries. 48 aggregates its own findings; these are not.
+34. On a sweep, every finding lands in an item, and the report says which: amend the live item
+    that carries it, date a correction onto the closed item it falsifies, or raise a new one. A
+    finding an item already owns as a class is counted against that item, not raised again. A
+    finding 48 reaches is 48's alone, and is not also raised here.
 35. On a sweep, say what was read in full, what was queried by key, and what could not be checked.
     A step that found nothing and could not have failed is a finding.
 48. On a sweep, check against the imperatives in force now: every document the project carries, and
