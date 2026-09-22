@@ -163,8 +163,15 @@ curl -fsSL https://raw.githubusercontent.com/Pyure-ai/working-contract/main/plug
 
 Or commit `RULES.md` into your own project and reference it from that project's `CLAUDE.md` — then it
 arrives with the clone and updates with a pull, with no install, no restart and **no setup script in
-any cloud environment**. You lose the gauge, the start-mode card and the turn-end refusal, which are
-the only things the code provides.
+any cloud environment**. You lose the gauge, the start-mode card and the turn-end refusal.
+
+⚠️ **You also gain something, so this is not a strictly weaker path.** Claude Code stands the
+Agent tool down unless *the user, a `CLAUDE.md` file, or a skill* asks for it — and `RULES.md`
+inside a `CLAUDE.md` **is that second channel by construction**, asking from turn one with nobody
+present. On the plugin path the rules arrive as hook output, which is none of the three, so the
+delegation rule reaches the exception only once the PRINCIPAL answers the start-mode card's ask
+about agent lanes: conditional, unenforced, and unavailable on the surfaces above that run
+unattended. The copy-in path carries that rule too, so it holds both routes.
 
 **Adapt it by deleting any rule you will not follow.** Nothing checks the file, so an unfollowed rule
 is pure cost.
