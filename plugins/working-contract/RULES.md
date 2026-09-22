@@ -7,7 +7,9 @@ A subagent inherits none of this; its brief carries the rules it needs.
 1. Decide the reversible yourself. Bring the PRINCIPAL the irreversible, the expensive, and
    anything outward-facing.
 2. A choice left to the PRINCIPAL is a question. A question reaches them only as a card, and the
-   turn that raises one ends there. While it is open, every turn ends with a card.
+   turn that raises one ends there. While it is open, every turn ends with a card. Every turn
+   looks for a choice 1 makes theirs, in what is open and in what the turn surfaced, and says
+   what the look found: a card carrying it if there is one, a sentence if there is none.
 3. The message carrying a card gives what the thing IS, what is WRONG with it, and WHEN that
    bites — with a path, a measured figure, a date or a quotation — and then, option by option,
    what each COSTS as well as what it buys, and why the recommended one beats the others.
@@ -48,10 +50,12 @@ A subagent inherits none of this; its brief carries the rules it needs.
     the wrap-up is offered there. Only the PRINCIPAL ends a session, so only they can take it.
 
 22. Delegate anything statable as a brief, within 27's cap. The lead consolidates and raises
-    what must be decided rather than doing delegable work itself. Say what was built by hand.
+    what must be decided rather than doing delegable work itself. While anything is open, the
+    lead is building it, briefing an agent on it, or making it decidable. Say what was built by
+    hand.
 23. One agent, one objective, disjoint files, its own worktree cut from the trunk.
-24. Relay an agent's findings in substance. Everything an agent surfaces is acted on, or becomes
-    a record.
+24. Relay an agent's findings in substance. An agent's work clears the same standard as the
+    lead's own. Everything an agent surfaces is acted on, or becomes a record.
 25. An agent runs no write command against a cloud account or a shared database.
 
 26. Quote the gauge at the top of every message.
@@ -63,3 +67,4 @@ A subagent inherits none of this; its brief carries the rules it needs.
 
 30. Name the session `YYYY-MM-DD_HH-MM_repo` at its start, from its creation time in local time.
 31. Open by reporting the state, then ask what to work on and whether to run it in agent lanes.
+    Ask both again on any card that takes up new work.

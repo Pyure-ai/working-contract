@@ -69,15 +69,19 @@ function gauge() {
   const tok = (v) => (v === null ? 'not readable' : `~${Math.round(v / 1000)}k`);
   const src = u ? `desktop · ${u.ageMin} min old` : 'no source';
   const dots = [dot(fh, BANDS.fh), dot(ctx, BANDS.ctx), dot(sd, BANDS.sd)];
-  const band = dots.includes('🔴')
-    ? 'RED — stop spawning. Rule 21: offer the wrap-up.'
-    : dots.slice(0, 1).concat(dots[2]).includes('🟡')
-      ? 'Amber on a rate row — at most two concurrent agents. Rule 21: offer the wrap-up.'
-      : dots[1] === '🟡'
-        ? 'Amber on the context row — cut context before spawning more. Rule 21: offer the wrap-up.'
-        : dots.includes('⚪')
-          ? 'A row is not readable — it borrows no number, and forecast by hand.'
-          : 'Green — up to six concurrent agents.';
+  const advice =
+    dots[1] === '🔴' || dots[2] === '🔴'
+      ? 'RED on the weekly or context row — stop spawning. Rule 21: offer the wrap-up.'
+      : dots[0] === '🔴'
+        ? 'RED on the 5-hour row — at most two concurrent agents. Rule 21: offer the wrap-up.'
+        : dots.slice(0, 1).concat(dots[2]).includes('🟡')
+          ? 'Amber on a rate row — at most two concurrent agents. Rule 21: offer the wrap-up.'
+          : dots[1] === '🟡'
+            ? 'Amber on the context row — cut context before spawning more. Rule 21: offer the wrap-up.'
+            : 'Green — up to six concurrent agents.';
+  const band = dots.includes('⚪')
+    ? `${advice} A row is not readable — it borrows no number and does not on its own stop a spawn; forecast by hand.`
+    : advice;
   return [
     '---', '&nbsp;', '---', '',
     '| | Reading | Red at | Source |',
