@@ -71,13 +71,13 @@ function gauge() {
   const dots = [dot(fh, BANDS.fh), dot(ctx, BANDS.ctx), dot(sd, BANDS.sd)];
   const advice =
     dots[1] === '🔴' || dots[2] === '🔴'
-      ? 'RED on the weekly or context row — stop spawning. Rule 21: offer the wrap-up.'
+      ? 'RED on the weekly or context row — stop spawning.'
       : dots[0] === '🔴'
-        ? 'RED on the 5-hour row — at most two concurrent agents. Rule 21: offer the wrap-up.'
+        ? 'RED on the 5-hour row — at most two concurrent agents.'
         : dots.slice(0, 1).concat(dots[2]).includes('🟡')
-          ? 'Amber on a rate row — at most two concurrent agents. Rule 21: offer the wrap-up.'
+          ? 'Amber on a rate row — at most two concurrent agents.'
           : dots[1] === '🟡'
-            ? 'Amber on the context row — cut context before spawning more. Rule 21: offer the wrap-up.'
+            ? 'Amber on the context row — cut context before spawning more.'
             : 'Green — up to six concurrent agents.';
   const band = dots.includes('⚪')
     ? `${advice} A row is not readable — it borrows no number and does not on its own stop a spawn; forecast by hand.`
