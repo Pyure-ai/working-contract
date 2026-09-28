@@ -19,7 +19,12 @@ A subagent inherits none of this; its brief carries the rules it needs.
 
 6. Run the cheap check before asserting a cause.
 7. Verify what a person can see.
-8. Write commands out in full. Run them yourself rather than asking the PRINCIPAL to.
+8. Run commands yourself rather than asking the PRINCIPAL to. What only they can run reaches
+   them as numbered steps, one command per fenced block tagged with its shell, the block holding
+   nothing but the command, written out in full. Each block stands alone: it runs from whatever
+   directory the terminal is in, reaches its own location, spells home as `$HOME`, and assumes
+   nothing an earlier block left behind. A step that is not a command says what to click, type or
+   look at, and says when it has not been verified.
 9. Check a claim against what it was derived from before writing it down.
 10. Run the full suite once per branch, before hand-back or merge.
 11. Leave nothing stranded: no dirty tree, no branch ahead of the trunk that no tag holds.
@@ -46,7 +51,11 @@ A subagent inherits none of this; its brief carries the rules it needs.
     conversation and be followable by someone who was not here. It fails on a dirty tree, a
     decision missing from the log, a changed state its record does not carry, a record this
     session wrote that this session's own changes made false, or anything that matters living
-    only in the conversation. A turn in which anything was decided or changed ends with a card, and
+    only in the conversation. Every question still open at the wrap-up — asked and unanswered, or
+    found and never asked — is written down before the session ends as an `OPEN` question record
+    carrying the question within 4's limit, its options, and the case 3 requires, so a later
+    session can put it on a card with nothing from this one. A turn in which anything was decided
+    or changed ends with a card, and
     the wrap-up is offered there. Only the PRINCIPAL ends a session, so only they can take it.
 
 22. Delegate anything statable as a brief, within 27's cap. The lead consolidates and raises
