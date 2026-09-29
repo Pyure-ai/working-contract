@@ -179,6 +179,36 @@ function cardThisTurn() {
   return true;
 }
 
+// Rule 2: a question named on a card answered this session gates no more turns of it. Named = the
+// id whole in a card's `question` text. Answered = its tool_result has no `is_error`, and the entry's
+// `toolUseResult.answers` holds one value that is not `[User dismissed — …]`. A dismissal arrives in
+// either shape: `is_error`, or every answer that marker. Any failure asks nothing, which leaves the
+// gate as it was.
+function askedThisSession() {
+  const t = input.transcript_path;
+  const text = [];
+  const said = (a) => (a && typeof a === 'object' ? Object.values(a) : [])
+    .some((v) => !String(v).startsWith('[User dismissed'));
+  try {
+    const cards = new Map();
+    for (const l of readFileSync(t, 'utf8').split('\n')) {
+      let o;
+      try { o = JSON.parse(l); } catch { continue; }
+      const m = o?.message;
+      if (o?.isSidechain || !Array.isArray(m?.content)) continue;
+      for (const c of m.content) {
+        if (m.role === 'assistant' && c?.type === 'tool_use' && c.name === 'AskUserQuestion')
+          cards.set(c.id, (c.input?.questions ?? []).map((q) => String(q?.question ?? '')).join('\n'));
+        else if (c?.type === 'tool_result' && cards.has(c.tool_use_id) && !c.is_error
+          && said(o.toolUseResult?.answers)) text.push(cards.get(c.tool_use_id));
+      }
+    }
+  } catch { return () => false; }
+  const all = text.join('\n');
+  const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, (c) => '\\' + c);
+  return (id) => new RegExp(`(?<![\\w.])${esc(id)}(?!\\w|\\.\\w)`).test(all);
+}
+
 try {
   const event = input.hook_event_name ?? process.argv[2] ?? '';
   if (event === 'SessionStart') process.stdout.write(sessionStart() + '\n');
@@ -186,8 +216,13 @@ try {
   else if (event === 'Stop') {
     const open = gated(items());
     if (open.length && !cardThisTurn()) {
-      process.stderr.write(`A turn ends with a card while a question is open: ${open.map((i) => i.id).join(' ')}.\n`);
-      process.exit(2);
+      const asked = askedThisSession();
+      const left = open.filter((i) => !asked(i.id));
+      if (left.length) {
+        process.stderr.write(`A turn ends with a card while a question is open: ${left.map((i) => i.id).join(' ')}`
+          + ' — not counting any already named on a card answered this session.\n');
+        process.exit(2);
+      }
     }
   }
 } catch (e) {
