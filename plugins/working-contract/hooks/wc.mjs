@@ -77,11 +77,16 @@ function gauge() {
         : dots.slice(0, 1).concat(dots[2]).includes('🟡')
           ? 'Amber on a rate row — at most two concurrent agents.'
           : dots[1] === '🟡'
-            ? 'Amber on the context row — cut context before spawning more.'
+            ? 'Amber on the context row — no new agent until the PRINCIPAL cuts the context.'
             : 'Green — up to six concurrent agents.';
   const band = dots.includes('⚪')
     ? `${advice} A row is not readable — it borrows no number and does not on its own stop a spawn; forecast by hand.`
     : advice;
+  // Rule 27: past the amber band the wrap-up is suggested, never started. On amber and red alike,
+  // whatever the rate rows say, because a session reads a bare "cut" as "end the session".
+  const wrap = dots[1] === '🟡' || dots[1] === '🔴'
+    ? ['', `Context is past ${BANDS.ctx[0] / 1000}k — a wrap-up is suggested. Only the PRINCIPAL takes it; until they do, the session works on and starts no step of it.`]
+    : [];
   return [
     '---', '&nbsp;', '---', '',
     '| | Reading | Red at | Source |',
@@ -89,7 +94,7 @@ function gauge() {
     `| **5-hour window** | ${dots[0]} ${pct(fh)} | 80 % | ${src} |`,
     `| **Context window** | ${dots[1]} ${tok(ctx)} | 500k | transcript |`,
     `| **Weekly all models** | ${dots[2]} ${pct(sd)} | 90 % | ${src} |`,
-    '', band,
+    '', band, ...wrap,
   ].join('\n');
 }
 
