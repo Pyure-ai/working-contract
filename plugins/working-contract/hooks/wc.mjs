@@ -4,7 +4,7 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join, basename } from 'node:path';
 
-const BANDS = { fh: [70, 80], sd: [85, 90], ctx: [400_000, 500_000] };
+const BANDS = { fh: [80, 90], sd: [90, 95], ctx: [500_000, 700_000] };
 const PLUGIN = process.env.CLAUDE_PLUGIN_ROOT ?? join(import.meta.dirname, '..');
 const REPO = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
 const LIVE = { question: ['OPEN'], work: ['UNSPECIFIED', 'BUILDABLE'] };
@@ -91,9 +91,9 @@ function gauge() {
     '---', '&nbsp;', '---', '',
     '| | Reading | Red at | Source |',
     '|---|---|---|---|',
-    `| **5-hour window** | ${dots[0]} ${pct(fh)} | 80 % | ${src} |`,
-    `| **Context window** | ${dots[1]} ${tok(ctx)} | 500k | transcript |`,
-    `| **Weekly all models** | ${dots[2]} ${pct(sd)} | 90 % | ${src} |`,
+    `| **5-hour window** | ${dots[0]} ${pct(fh)} | ${BANDS.fh[1]} % | ${src} |`,
+    `| **Context window** | ${dots[1]} ${tok(ctx)} | ${BANDS.ctx[1] / 1000}k | transcript |`,
+    `| **Weekly all models** | ${dots[2]} ${pct(sd)} | ${BANDS.sd[1]} % | ${src} |`,
     '', band, ...wrap,
   ].join('\n');
 }

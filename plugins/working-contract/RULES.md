@@ -86,7 +86,7 @@ A subagent inherits none of this; its brief carries the rules it needs.
     agent until the PRINCIPAL cuts the context. Red on the weekly or context row: stop spawning.
     Red on the 5-hour row: two. Amber or red on the context row, a wrap-up is suggested to the
     PRINCIPAL; the session works on and starts no step of it until they take it.
-28. Bands: the 5-hour window 70 % / 80 %. Weekly all models 85 % / 90 %. Context 400,000 / 500,000
+28. Bands: the 5-hour window 80 % / 90 %. Weekly all models 90 % / 95 %. Context 500,000 / 700,000
     tokens.
 29. A row that cannot be read borrows no number, and does not on its own stop a spawn.
 
