@@ -81,12 +81,13 @@ A subagent inherits none of this; its brief carries the rules it needs.
     is suggested to the PRINCIPAL; the session works on and starts no step of it until they take it.
 28. Context bands: 500,000 / 700,000 tokens. A context row that cannot be read borrows no number,
     and does not on its own stop a spawn.
-29. A session may spawn 2 agents, plus what each answered allowance card adds: 0, 2, 6 or 10. A
-    spawn is one Agent call by the lead; a workflow or a session started for the PRINCIPAL is not.
+29. The opening card sets the allowance: 10, 30 or 60 spawns; until one is answered it is 10. Each
+    later allowance card allows 2, 8 or 20 more, counted from the spawns made when it is answered.
+    A spawn is one Agent call by the lead; a workflow or a session started for the PRINCIPAL is not.
     An allowance card's question says "allowance". When the allowance is spent, spawn nothing and
-    put an allowance card: wrap up, or 2, 6 or 10 more — the wrap-up recommended only on an amber
+    put an allowance card: wrap up, or 2, 8 or 20 more — the wrap-up recommended only on an amber
     or red context row.
 
 30. Name the session `YYYY-MM-DD_HH-MM_repo` at its start, from its creation time in local time.
-31. Open by reporting the state, then ask what to work on and the agent allowance for it: 0, 2, 6
-    or 10. Ask both again on any card that takes up new work.
+31. Open by reporting the state, then ask what to work on and its agent allowance: 10, 30 or 60.
+    Ask both again on any card that takes up new work, the allowance then as a top-up.
