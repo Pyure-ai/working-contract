@@ -44,7 +44,7 @@ function contextTokens() {
 // to a card question that says "allowance"; that answer SETS it to its first whole number (the start:
 // 10, 30 or 60). Every later one allows its number MORE (the top-up: 2, 8 or 20), counted from the
 // spawns made by then — so a top-up after an overrun still buys exactly what it says. Both count from
-// the spawns already made. A dismissed card does nothing. Read from
+// the spawns already made. A dismissed card, or an answer with no number in it, does nothing. Read from
 // this session's own transcript, so it is never stale; unreadable, the row says so and borrows nothing.
 function agents() {
   const t = input.transcript_path;
@@ -69,8 +69,9 @@ function agents() {
           for (const q of cards.get(c.tool_use_id)) {
             const a = String(answers[q] ?? '');
             if (!ALLOWANCE.word.test(q) || a.startsWith('[User dismissed')) continue;
-            const n = Number(a.match(/\d+/)?.[0] ?? 0);
-            allowed = (started ? Math.max(allowed, spawned) : spawned) + n;
+            const m = a.match(/\d+/);
+            if (!m) continue;
+            allowed = (started ? Math.max(allowed, spawned) : spawned) + Number(m[0]);
             started = true;
           }
         }
