@@ -4,8 +4,6 @@ import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, basename } from 'node:path';
 
 const BANDS = { ctx: [500_000, 700_000] };
-// Rule 29: the allowance a session starts with, and the word that marks a card as an allowance card.
-const ALLOWANCE = { start: 10, word: /allowance/i };
 const PLUGIN = process.env.CLAUDE_PLUGIN_ROOT ?? join(import.meta.dirname, '..');
 const REPO = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
 const LIVE = { question: ['OPEN'], work: ['UNSPECIFIED', 'BUILDABLE'] };
@@ -40,57 +38,13 @@ function contextTokens() {
   return null;
 }
 
-// Rule 29: spawns are the lead's Agent calls. The allowance is ALLOWANCE.start until the first answer
-// to a card question that says "allowance"; that answer SETS it to its first whole number (the start:
-// 10, 30 or 60). Every later one allows its number MORE (the top-up: 2, 8 or 20), counted from the
-// spawns made by then — so a top-up after an overrun still buys exactly what it says. Both count from
-// the spawns already made. A dismissed card, or an answer with no number in it, does nothing. Read from
-// this session's own transcript, so it is never stale; unreadable, the row says so and borrows nothing.
-function agents() {
-  const t = input.transcript_path;
-  if (!t || !existsSync(t)) return null;
-  try {
-    let spawned = 0;
-    let allowed = ALLOWANCE.start;
-    let started = false;
-    const cards = new Map();
-    for (const l of readFileSync(t, 'utf8').split('\n')) {
-      let o;
-      try { o = JSON.parse(l); } catch { continue; }
-      const m = o?.message;
-      if (o?.isSidechain || !Array.isArray(m?.content)) continue;
-      for (const c of m.content) {
-        if (m.role === 'assistant' && c?.type === 'tool_use') {
-          if (c.name === 'Agent' || c.name === 'Task') spawned++;
-          else if (c.name === 'AskUserQuestion')
-            cards.set(c.id, (c.input?.questions ?? []).map((q) => String(q?.question ?? '')));
-        } else if (c?.type === 'tool_result' && cards.has(c.tool_use_id) && !c.is_error) {
-          const answers = o.toolUseResult?.answers ?? {};
-          for (const q of cards.get(c.tool_use_id)) {
-            const a = String(answers[q] ?? '');
-            if (!ALLOWANCE.word.test(q) || a.startsWith('[User dismissed')) continue;
-            const m = a.match(/\d+/);
-            if (!m) continue;
-            allowed = (started ? Math.max(allowed, spawned) : spawned) + Number(m[0]);
-            started = true;
-          }
-        }
-      }
-    }
-    return { spawned, allowed };
-  } catch { return null; }
-}
-
 function gauge() {
   const ctx = contextTokens();
-  const a = agents();
   const d = dot(ctx, BANDS.ctx);
   const tok = (v) => (v === null ? 'not readable' : `~${Math.round(v / 1000)}k`);
-  const spent = a !== null && a.spawned >= a.allowed;
   const lines = [];
   if (d === '🔴') lines.push('RED on the context row — stop spawning.');
   else if (d === '🟡') lines.push('Amber on the context row — no new agent until the PRINCIPAL cuts the context.');
-  if (spent) lines.push('Allowance spent — spawn nothing; put an allowance card: wrap up, or 2, 8 or 20 more.');
   if (!lines.length) lines.push('Green — up to six concurrent agents.');
   if (d === '⚪') lines.push('The context row is not readable — it borrows no number and does not on its own stop a spawn.');
   // Rule 27: past the amber band the wrap-up is suggested, never started. On amber and red alike,
@@ -103,7 +57,6 @@ function gauge() {
     '| | Reading | Red at | Source |',
     '|---|---|---|---|',
     `| **Context window** | ${d} ${tok(ctx)} | ${BANDS.ctx[1] / 1000}k | transcript |`,
-    `| **Agents spawned** | ${a ? `${a.spawned} of ${a.allowed}` : 'not readable'} | — | transcript |`,
     '', lines.join(' '), ...wrap,
   ].join('\n');
 }
@@ -169,8 +122,7 @@ function sessionStart() {
   const noask = unasked(all);
   if (noask.length) out.push(`UNSPECIFIED WITHOUT A QUESTION ${noask.length} · ${noask.join(' ')} — no open question cites these, against rules 18 and 2`);
   out.push('', gauge());
-  out.push('', 'OPEN WITH THE STATE, THEN ASK WHAT TO WORK ON AND ITS AGENT ALLOWANCE: 10, 30 OR 60 — rule 31.',
-    '  The card\'s question says "allowance", so the gauge counts the answer — rule 29.',
+  out.push('', 'OPEN WITH THE STATE, THEN ASK WHAT TO WORK ON, AND WHETHER TO RUN IT IN AGENT LANES — rule 31.',
     '  Rule 21: every session ends with a wrap-up, offered on the card that ends a turn',
     '  in which something was decided or changed.');
   return out.join('\n');

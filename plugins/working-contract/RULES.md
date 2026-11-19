@@ -61,11 +61,11 @@ A subagent inherits none of this; its brief carries the rules it needs.
     this one. A turn in which anything was decided or changed ends with a card that offers the
     wrap-up. Only the PRINCIPAL ends a session, so only they can take it.
 
-22. Delegate anything statable as a brief, within 29's allowance and 27's cap. The lead
-    consolidates and raises what must be decided rather than doing delegable work itself; while
-    anything is open, it is building it, briefing an agent on it, or making it decidable. Say what
-    was built by hand. When a turn both asks and delegates, a brief the answer cannot change goes
-    out before the card; one it could redirect waits for it.
+22. Delegate anything statable as a brief, within 27's cap. The lead consolidates and raises what
+    must be decided rather than doing delegable work itself; while anything is open, it is building
+    it, briefing an agent on it, or making it decidable. Say what was built by hand. When a turn both
+    asks and delegates, a brief the answer cannot change goes out before the card; one it could
+    redirect waits for it.
 23. One agent, one objective, disjoint files, its own worktree cut from the trunk.
 24. Relay an agent's findings in substance, never compressed to done, with judgement on top of its
     account, never in its place. Brief every agent that its report reaches the PRINCIPAL: findings
@@ -81,13 +81,7 @@ A subagent inherits none of this; its brief carries the rules it needs.
     is suggested to the PRINCIPAL; the session works on and starts no step of it until they take it.
 28. Context bands: 500,000 / 700,000 tokens. A context row that cannot be read borrows no number,
     and does not on its own stop a spawn.
-29. The opening card sets the allowance: 10, 30 or 60 spawns; until one is answered it is 10. Each
-    later allowance card allows 2, 8 or 20 more, counted from the spawns made when it is answered.
-    A spawn is one Agent call by the lead; a workflow or a session started for the PRINCIPAL is not.
-    An allowance card's question says "allowance". When the allowance is spent, spawn nothing and
-    put an allowance card: wrap up, or 2, 8 or 20 more — the wrap-up recommended only on an amber
-    or red context row.
 
 30. Name the session `YYYY-MM-DD_HH-MM_repo` at its start, from its creation time in local time.
-31. Open by reporting the state, then ask what to work on and its agent allowance: 10, 30 or 60.
-    Ask both again on any card that takes up new work, the allowance then as a top-up.
+31. Open by reporting the state, then ask what to work on and whether to run it in agent lanes.
+    Ask both again on any card that takes up new work.
