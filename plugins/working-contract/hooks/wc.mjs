@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // working-contract. One file, three events. Guarded: any failure exits 0 and names what went dark.
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
-import { homedir } from 'node:os';
 import { join, basename } from 'node:path';
 
-const BANDS = { fh: [80, 90], sd: [90, 95], ctx: [500_000, 700_000] };
+const BANDS = { ctx: [500_000, 700_000] };
+// Rule 29: the allowance a session starts with, and the word that marks a card as an allowance card.
+const ALLOWANCE = { start: 2, word: /allowance/i };
 const PLUGIN = process.env.CLAUDE_PLUGIN_ROOT ?? join(import.meta.dirname, '..');
 const REPO = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
 const LIVE = { question: ['OPEN'], work: ['UNSPECIFIED', 'BUILDABLE'] };
@@ -26,27 +27,6 @@ try {
 
 const dot = (v, [y, r]) => (v === null ? '⚪' : v >= r ? '🔴' : v >= y ? '🟡' : '🟢');
 
-// The desktop app's usage series. Samples before the last downward step belong to a window that has
-// already turned over, so they are dropped rather than reported.
-function usage() {
-  const p = join(homedir(), 'Library', 'Application Support', 'Claude', 'plan-usage-history.json');
-  if (process.platform !== 'darwin' || !existsSync(p)) return null;
-  try {
-    const all = (JSON.parse(readFileSync(p, 'utf8')).samples ?? [])
-      .filter((r) => r && r.u && Number.isFinite(r.t) && typeof r.u.fh === 'number');
-    if (!all.length) return null;
-    let start = 0;
-    for (let i = 1; i < all.length; i++) if (all[i].u.fh < all[i - 1].u.fh) start = i;
-    const last = all[all.length - 1];
-    return {
-      fh: last.u.fh,
-      sd: typeof last.u.sd === 'number' ? last.u.sd : null,
-      ageMin: Math.max(0, Math.round((Date.now() - last.t) / 60000)),
-      dropped: start,
-    };
-  } catch { return null; }
-}
-
 function contextTokens() {
   const t = input.transcript_path;
   if (!t || !existsSync(t)) return null;
@@ -60,41 +40,64 @@ function contextTokens() {
   return null;
 }
 
+// Rule 29: spawns are the lead's Agent calls; the allowance is the start plus the first whole number
+// in each answer to a card question that says "allowance". A dismissed card adds nothing. Read from
+// this session's own transcript, so it is never stale; unreadable, the row says so and borrows nothing.
+function agents() {
+  const t = input.transcript_path;
+  if (!t || !existsSync(t)) return null;
+  try {
+    let spawned = 0;
+    let allowed = ALLOWANCE.start;
+    const cards = new Map();
+    for (const l of readFileSync(t, 'utf8').split('\n')) {
+      let o;
+      try { o = JSON.parse(l); } catch { continue; }
+      const m = o?.message;
+      if (o?.isSidechain || !Array.isArray(m?.content)) continue;
+      for (const c of m.content) {
+        if (m.role === 'assistant' && c?.type === 'tool_use') {
+          if (c.name === 'Agent' || c.name === 'Task') spawned++;
+          else if (c.name === 'AskUserQuestion')
+            cards.set(c.id, (c.input?.questions ?? []).map((q) => String(q?.question ?? '')));
+        } else if (c?.type === 'tool_result' && cards.has(c.tool_use_id) && !c.is_error) {
+          const answers = o.toolUseResult?.answers ?? {};
+          for (const q of cards.get(c.tool_use_id)) {
+            const a = String(answers[q] ?? '');
+            if (!ALLOWANCE.word.test(q) || a.startsWith('[User dismissed')) continue;
+            allowed += Number(a.match(/\d+/)?.[0] ?? 0);
+          }
+        }
+      }
+    }
+    return { spawned, allowed };
+  } catch { return null; }
+}
+
 function gauge() {
-  const u = usage();
   const ctx = contextTokens();
-  const fh = u ? u.fh : null;
-  const sd = u ? u.sd : null;
-  const pct = (v) => (v === null ? 'not readable' : `${v} %`);
+  const a = agents();
+  const d = dot(ctx, BANDS.ctx);
   const tok = (v) => (v === null ? 'not readable' : `~${Math.round(v / 1000)}k`);
-  const src = u ? `desktop · ${u.ageMin} min old` : 'no source';
-  const dots = [dot(fh, BANDS.fh), dot(ctx, BANDS.ctx), dot(sd, BANDS.sd)];
-  const advice =
-    dots[1] === '🔴' || dots[2] === '🔴'
-      ? 'RED on the weekly or context row — stop spawning.'
-      : dots[0] === '🔴'
-        ? 'RED on the 5-hour row — at most two concurrent agents.'
-        : dots.slice(0, 1).concat(dots[2]).includes('🟡')
-          ? 'Amber on a rate row — at most two concurrent agents.'
-          : dots[1] === '🟡'
-            ? 'Amber on the context row — no new agent until the PRINCIPAL cuts the context.'
-            : 'Green — up to six concurrent agents.';
-  const band = dots.includes('⚪')
-    ? `${advice} A row is not readable — it borrows no number and does not on its own stop a spawn; forecast by hand.`
-    : advice;
+  const spent = a !== null && a.spawned >= a.allowed;
+  const lines = [];
+  if (d === '🔴') lines.push('RED on the context row — stop spawning.');
+  else if (d === '🟡') lines.push('Amber on the context row — no new agent until the PRINCIPAL cuts the context.');
+  if (spent) lines.push('Allowance spent — spawn nothing; put an allowance card: wrap up, or 2, 6 or 10 more.');
+  if (!lines.length) lines.push('Green — up to six concurrent agents.');
+  if (d === '⚪') lines.push('The context row is not readable — it borrows no number and does not on its own stop a spawn.');
   // Rule 27: past the amber band the wrap-up is suggested, never started. On amber and red alike,
-  // whatever the rate rows say, because a session reads a bare "cut" as "end the session".
-  const wrap = dots[1] === '🟡' || dots[1] === '🔴'
+  // because a session reads a bare "cut" as "end the session".
+  const wrap = d === '🟡' || d === '🔴'
     ? ['', `Context is past ${BANDS.ctx[0] / 1000}k — a wrap-up is suggested. Only the PRINCIPAL takes it; until they do, the session works on and starts no step of it.`]
     : [];
   return [
     '---', '&nbsp;', '---', '',
     '| | Reading | Red at | Source |',
     '|---|---|---|---|',
-    `| **5-hour window** | ${dots[0]} ${pct(fh)} | ${BANDS.fh[1]} % | ${src} |`,
-    `| **Context window** | ${dots[1]} ${tok(ctx)} | ${BANDS.ctx[1] / 1000}k | transcript |`,
-    `| **Weekly all models** | ${dots[2]} ${pct(sd)} | ${BANDS.sd[1]} % | ${src} |`,
-    '', band, ...wrap,
+    `| **Context window** | ${d} ${tok(ctx)} | ${BANDS.ctx[1] / 1000}k | transcript |`,
+    `| **Agents spawned** | ${a ? `${a.spawned} of ${a.allowed}` : 'not readable'} | — | transcript |`,
+    '', lines.join(' '), ...wrap,
   ].join('\n');
 }
 
@@ -159,7 +162,8 @@ function sessionStart() {
   const noask = unasked(all);
   if (noask.length) out.push(`UNSPECIFIED WITHOUT A QUESTION ${noask.length} · ${noask.join(' ')} — no open question cites these, against rules 18 and 2`);
   out.push('', gauge());
-  out.push('', 'OPEN WITH THE STATE, THEN ASK WHAT TO WORK ON, AND WHETHER TO RUN IT IN AGENT LANES — rule 31.',
+  out.push('', 'OPEN WITH THE STATE, THEN ASK WHAT TO WORK ON AND ITS AGENT ALLOWANCE: 0, 2, 6 OR 10 — rule 31.',
+    '  The card\'s question says "allowance", so the gauge counts the answer — rule 29.',
     '  Rule 21: every session ends with a wrap-up, offered on the card that ends a turn',
     '  in which something was decided or changed.');
   return out.join('\n');
