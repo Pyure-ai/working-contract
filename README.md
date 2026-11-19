@@ -23,7 +23,7 @@ wc -c plugins/working-contract/RULES.md plugins/working-contract/hooks/wc.mjs
 | When | What happens | Can it stop you? |
 |---|---|---|
 | `SessionStart` | prints the rules, the session name, the live items, the gauge, the start-mode card, and any of its report lines | no |
-| `UserPromptSubmit` | prints a two-row gauge — the context window, and agents spawned against the allowance | no |
+| `UserPromptSubmit` | prints a one-row gauge — the context window | no |
 | `Stop` | refuses a turn that ends without a card while a question is `OPEN` | **yes — the only one** |
 
 Everything else is stated and unenforced. Every event the hook handles runs inside a `try`/`catch`:
@@ -172,7 +172,7 @@ Agent tool down unless *the user, a `CLAUDE.md` file, or a skill* asks for it �
 inside a `CLAUDE.md` **is that second channel by construction**, asking from turn one with nobody
 present. On the plugin path the rules arrive as hook output, which is none of the three, so the
 delegation rule reaches the exception only once the PRINCIPAL answers the start-mode card's ask
-for an agent allowance: conditional, unenforced, and unavailable on the surfaces above that run
+about agent lanes: conditional, unenforced, and unavailable on the surfaces above that run
 unattended. The copy-in path carries that rule too, so it holds both routes.
 
 **Adapt it by deleting any rule you will not follow.** Nothing checks the file, so an unfollowed rule
@@ -180,7 +180,7 @@ is pure cost.
 
 ## Requirements
 
-Node.js 20.11 or newer. No dependencies, no network calls. Both gauge rows read the session's own
+Node.js 20.11 or newer. No dependencies, no network calls. The gauge reads the session's own
 transcript, on any platform, cloud sessions included.
 
 MIT licensed.
