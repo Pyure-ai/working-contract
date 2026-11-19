@@ -36,11 +36,13 @@ In a repository's `.claude/settings.json`:
 ```json
 {
   "extraKnownMarketplaces": {
-    "working-contract": { "source": { "source": "github", "repo": "Pyure-ai/working-contract" } }
+    "working-contract": { "source": { "source": "github", "repo": "Pyure-ai/working-contract" }, "autoUpdate": true }
   },
   "enabledPlugins": { "working-contract@working-contract": true }
 }
 ```
+
+The Claude desktop app starts sessions with `DISABLE_AUTOUPDATER=1`, which also stops plugin auto-update; add `"env": { "FORCE_AUTOUPDATE_PLUGINS": "1" }` to `~/.claude/settings.json` to let it run.
 
 Then once per machine:
 
